@@ -45,6 +45,8 @@ def normalize_numerical_columns(df, column_list):
 
 
 def normalize_data(df: pd.DataFrame, numerical_columns: list =[], categorical_columns: list=[], boolean_columns: list=[], drop_columns: list=[], fill_method:str='mean'):
+    df = df.drop(drop_columns, axis=1)
+
     fill_na(df, boolean_columns, 'false')
     fill_na(df, numerical_columns, fill_method)
 
@@ -71,3 +73,67 @@ def split_train_test(df: pd.DataFrame, output: str):
     X = df.drop(output, axis=1)
     y = df[output]
     return train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+def price_preprocessing():
+    #apartment rental data
+    price_datasets_array : list = [
+        '../../data/apartments_pl_2023_08.csv',
+        '../../data/apartments_pl_2023_09.csv', 
+        '../../data/apartments_pl_2023_10.csv',
+        '../../data/apartments_pl_2023_11.csv', 
+        '../../data/apartments_pl_2023_12.csv',
+        '../../data/apartments_pl_2024_01.csv', 
+        '../../data/apartments_pl_2024_02.csv',
+        '../../data/apartments_pl_2024_03.csv', 
+        '../../data/apartments_pl_2024_04.csv' 
+    ]
+
+    numerical_columns = ['squareMeters', 'rooms', 'floorCount', 'latitude', 'longitude', 'centreDistance', 'poiCount', 'schoolDistance', 'clinicDistance', 'postOfficeDistance', 'kindergartenDistance', 'restaurantDistance', 'collegeDistance', 'pharmacyDistance']
+    categorical_columns = ['city', 'ownership']
+    boolean_columns = ['hasParkingSpace', 'hasBalcony', 'hasElevator', 'hasSecurity', 'hasStorageRoom']
+    drop_columns = ['condition', 'buildingMaterial', 'buildYear', 'floor', 'type']
+    output_column = 'price'
+
+    data = normalize_data(
+        df = load_data(price_datasets_array).drop('id', axis=1),
+        numerical_columns=numerical_columns,
+        categorical_columns=categorical_columns, 
+        boolean_columns=boolean_columns,
+        drop_columns=drop_columns,
+        fill_method='median'
+    )
+
+    data = remove_exceptions(data)
+
+    return split_train_test(data, output_column)
+
+
+def rent_preprocessing():
+    price_data_array_rent : list = [
+        '../../data/apartments_rent_pl_2023_11.csv', 
+        '../../data/apartments_rent_pl_2023_12.csv',
+        '../../data/apartments_rent_pl_2024_01.csv', 
+        '../../data/apartments_rent_pl_2024_02.csv',
+        '../../data/apartments_rent_pl_2024_03.csv', 
+        '../../data/apartments_rent_pl_2024_04.csv' 
+    ]
+
+    numerical_columns = ['squareMeters', 'rooms', 'floorCount', 'latitude', 'longitude', 'centreDistance', 'poiCount', 'schoolDistance', 'clinicDistance', 'postOfficeDistance', 'kindergartenDistance', 'restaurantDistance', 'collegeDistance', 'pharmacyDistance']
+    categorical_columns = ['city', 'ownership']
+    boolean_columns = ['hasParkingSpace', 'hasBalcony', 'hasElevator', 'hasSecurity', 'hasStorageRoom']
+    drop_columns = ['condition', 'buildingMaterial', 'buildYear', 'floor', 'type']
+    output_column = 'price'
+
+    data = normalize_data(
+        df = load_data(price_data_array_rent).drop('id', axis=1),
+        numerical_columns=numerical_columns,
+        categorical_columns=categorical_columns, 
+        boolean_columns=boolean_columns,
+        drop_columns=drop_columns,
+        fill_method='median'
+    )
+
+    data = remove_exceptions(data)
+
+    return split_train_test(data, output_column)
