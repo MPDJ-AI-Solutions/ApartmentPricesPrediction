@@ -1,9 +1,12 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import winsound
 
+from scipy.stats import gaussian_kde
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 
-import winsound
 
 def load_data(source_list: list):
     return pd.concat([pd.read_csv(data_set)for data_set in source_list])
@@ -20,6 +23,31 @@ def evaluate_model(true_data, predicted_data):
     print(f'MSE: {mse}')
     print(f'MAE: {mae}')
     print(f'R-squared: {r2}')
+
+    min_val = min(min(true_data), min(predicted_data))
+    max_val = max(max(true_data), max(predicted_data))
+    ideal_line = np.linspace(min_val, max_val, 100)
+
+    plt.figure(figsize=(8, 8))
+    plt.scatter(true_data, predicted_data, edgecolors='white', s= 100)
+    plt.plot(ideal_line, ideal_line, '--', color='red', label='Ideal Fit')
+    plt.xlabel('Actual Values')
+    plt.ylabel('Predicted Values')
+    plt.title('Actual vs. Predicted Values')
+    plt.legend()
+    plt.show()
+
+    errors = true_data - predicted_data
+    kde = gaussian_kde(errors)
+    x_range = np.linspace(errors.min(), errors.max(), 1000)
+
+    plt.figure(figsize=(5, 4))
+    plt.hist(errors, bins=30, density=True, alpha=0.6, color='g')
+    plt.xlabel('Prediction Errors')
+    plt.ylabel('Frequency')
+    plt.title('Prediction Errors Histogram')
+    plt.plot(x_range, kde(x_range), 'k')
+    plt.show()
 
 
 def fill_na(df, column_list, method='median'):
