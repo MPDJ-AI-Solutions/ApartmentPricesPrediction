@@ -14,21 +14,20 @@ def load_data(source_list: list):
 def notify(time):
     winsound.Beep(3000, time)  # Beep at 1000 Hz for 100 ms
 
-
 def evaluate_model(true_data, predicted_data):
     mse = mean_squared_error(predicted_data, true_data)
     mae = mean_absolute_error(predicted_data, true_data)
     r2 = r2_score(predicted_data, true_data)
 
-    print(f'MSE: {mse}')
-    print(f'MAE: {mae}')
-    print(f'R-squared: {r2}')
+    print(f'MSE: {round(mse, 2)}')
+    print(f'MAE: {round(mae, 2)}')
+    print(f'R-squared: {round(r2, 2)}')
 
     min_val = min(min(true_data), min(predicted_data))
     max_val = max(max(true_data), max(predicted_data))
     ideal_line = np.linspace(min_val, max_val, 100)
 
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=(5, 4))
     plt.scatter(true_data, predicted_data, edgecolors='white', s= 100)
     plt.plot(ideal_line, ideal_line, '--', color='red', label='Ideal Fit')
     plt.xlabel('Actual Values')
