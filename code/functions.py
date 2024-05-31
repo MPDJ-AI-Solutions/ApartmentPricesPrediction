@@ -28,7 +28,7 @@ def evaluate_model(true_data, predicted_data):
     ideal_line = np.linspace(min_val, max_val, 100)
 
     plt.figure(figsize=(5, 4))
-    plt.scatter(true_data, predicted_data, edgecolors='white', s= 100)
+    plt.scatter(true_data, predicted_data, edgecolors='white', s=30)
     plt.plot(ideal_line, ideal_line, '--', color='red', label='Ideal Fit')
     plt.xlabel('Actual Values')
     plt.ylabel('Predicted Values')
