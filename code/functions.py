@@ -67,11 +67,16 @@ def fill_na(df, column_list, method='median'):
         df[column] = df[column].fillna(fill_value)
 
 
-def normalize_numerical_columns(df, column_list):
+def normalize_numerical_columns(df: pd.DataFrame, column_list: list):
     df[column_list] = (df[column_list] - df[column_list].min()) / (df[column_list].max() - df[column_list].min())
 
 
-def normalize_data(df: pd.DataFrame, numerical_columns: list =[], categorical_columns: list=[], boolean_columns: list=[], drop_columns: list=[], fill_method:str='mean'):
+def normalize_data(df: pd.DataFrame, 
+                   numerical_columns: list =[], 
+                   categorical_columns: list=[], 
+                   boolean_columns: list=[], 
+                   drop_columns: list=[], 
+                   fill_method:str='mean'):
     df = df.drop(drop_columns, axis=1)
 
     fill_na(df, boolean_columns, 'false')
